@@ -2,8 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@zbyteio/zbyte-relay-client"; 
 
-contract Firsttoken is ERC20 {
+contract Firsttoken is ERC20, RelayClient {
     address private owner;
 
     constructor(uint256 initialSupply) ERC20("Firsttoken", "FT") {
@@ -11,8 +12,25 @@ contract Firsttoken is ERC20 {
         owner = msg.sender;
     }
 
-    function mint(address to, uint amount) public {
+ 
+    function mint(address to, uint256 amount) public {
         require(msg.sender == owner, "only owner");
         _mint(to, amount);
+    }
+
+
+    function _msgSender() internal view virtual override returns (address sender) {
+        if (isTrustedForwarder(msg.sender)) {
+            return super._msgSender();
+        }
+        return msg.sender;
+    }
+
+   
+    function _msgData() internal view virtual override returns (bytes calldata) {
+        if (isTrustedForwarder(msg.sender)) {
+            return super._msgData();
+        }
+        return msg.data;
     }
 }

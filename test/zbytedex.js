@@ -20,8 +20,8 @@ describe("zbytedex Tests", function () {
         await tokenB.mint(LP1.address, ethers.utils.parseUnits("500000", 18));
 
         // Deploy zbytedex
-        const zbytedex = await ethers.getContractFactory("zbyteDex");
-        dex = await zbytedex.deploy();
+        const ZbyteDex = await ethers.getContractFactory("zbytedex");
+        dex = await ZbyteDex.deploy();
     });
 
     it("Should create a pool", async function () {
@@ -61,6 +61,7 @@ describe("zbytedex Tests", function () {
         await tokenA.connect(LP2).approve(dex.address, ethers.utils.parseUnits("7000", 18));
         await tokenB.connect(LP2).approve(dex.address, ethers.utils.parseUnits("700000", 18));
 
+        // Check for correct spot price and liquidity addition
         await expect(
             dex.connect(LP2).addLiquidity(
                 tokenA.address,
